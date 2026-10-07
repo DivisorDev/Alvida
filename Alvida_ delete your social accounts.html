@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alvida: delete your social accounts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF2F6;--panel:#fff;--ink:#14213D;--mute:#52607a;--line:#CBD5E1;--ok:#0F766E;--danger:#B42318;--onink:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1626;--panel:#16213a;--ink:#e6ecf7;--mute:#9fb0cc;--line:#2a3a5c;--ok:#4fd1c0;--danger:#ff8a7a;--onink:#0e1626}}
+:root[data-theme="dark"]{--bg:#0e1626;--panel:#16213a;--ink:#e6ecf7;--mute:#9fb0cc;--line:#2a3a5c;--ok:#4fd1c0;--danger:#ff8a7a;--onink:#0e1626}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Public Sans",system-ui,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:18px 18px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;font-family:"Bricolage Grotesque",Georgia,serif;font-weight:800;font-size:1.2rem}
+.lang button{font:inherit;font-size:.9rem;font-weight:600;background:none;border:1px solid var(--line);color:var(--mute);padding:4px 12px;cursor:pointer}
+.lang button:first-child{border-radius:999px 0 0 999px}.lang button:last-child{border-radius:0 999px 999px 0;border-left:0}
+.lang button.on{background:var(--ink);color:var(--onink);border-color:var(--ink)}
+h1{font-family:"Bricolage Grotesque",Georgia,serif;font-size:clamp(2.1rem,8vw,3.4rem);line-height:1.04;letter-spacing:-.025em;margin:.7em 0 .3em}
+.sub{color:var(--mute);max-width:52ch;margin:0 0 20px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--panel);border:2px solid var(--ink);border-radius:10px;padding:14px 16px}
+#q{font-size:1.15rem}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.chips button{font:inherit;font-size:.92rem;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chips button.on{background:var(--ink);color:var(--onink);border-color:var(--ink)}
+.prog{display:flex;align-items:center;gap:12px;font-size:.92rem;color:var(--mute);margin:6px 0 14px}
+.bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:8px 0}
+details[open]{border-color:var(--ink)}
+summary{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;list-style:none;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary .cat{margin-left:auto;font-weight:400;font-size:.85rem;color:var(--mute)}
+.tick{width:20px;height:20px;border:2px solid var(--line);border-radius:50%;flex:none}
+.isdone .tick{background:var(--ok);border-color:var(--ok)}
+.isdone summary b{text-decoration:line-through;color:var(--mute)}
+.pn{padding:0 16px 16px}
+.pn ol{margin:0 0 12px;padding-left:20px}
+.note{font-size:.92rem;color:var(--mute);border-left:3px solid var(--line);padding-left:12px;margin:0 0 14px}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:600;text-decoration:none;border-radius:8px;padding:10px 16px;cursor:pointer;border:2px solid var(--ink);background:none;color:var(--ink);display:inline-block}
+.btn.del{background:var(--danger);border-color:var(--danger);color:#fff}
+.empty{padding:30px 0;text-align:center;color:var(--mute)}
+h2{font-family:"Bricolage Grotesque",Georgia,serif;font-size:1.6rem;margin:2.2em 0 .3em}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+textarea{min-height:230px;font-size:.92rem;resize:vertical}
+.warn{margin-top:28px;padding:14px 16px;border:1px solid var(--danger);border-radius:10px;font-size:.92rem}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="w">
+<div class="top"><span>Alvida</span><span class="lang"><button id="en" class="on">EN</button><button id="hi">हिंदी</button></span></div>
+<h1 id="h1"></h1>
+<p class="sub" id="sub"></p>
+<input id="q" type="search" autocomplete="off">
+<div class="chips" id="chips"></div>
+<div class="prog"><span id="pt"></span><div class="bar"><i id="pb"></i></div></div>
+<div id="list"></div>
+
+<h2 id="h2"></h2>
+<p class="sub" id="h2s"></p>
+<div class="row"><select id="ct"></select><select id="pl"></select></div>
+<input id="un">
+<div class="row"><textarea id="out" readonly style="grid-column:1/-1"></textarea></div>
+<button class="btn" id="cp"></button>
+
+<p class="warn" id="warn"></p>
+</div>
+<script>
+var P=[
+{n:"Instagram",c:"social",u:"https://accountscenter.instagram.com/personal_info/",d:"https://accountscenter.instagram.com/info_and_permissions/dyi/",s:["Open Accounts Center, then Personal details","Tap Account ownership and control","Choose Deactivation or deletion, pick your account","Select Delete account and confirm with your password"],g:"Deleted about 30 days after you ask. Logging in before that cancels it."},
+{n:"Facebook",c:"social",u:"https://accountscenter.facebook.com/personal_info/",d:"https://accountscenter.facebook.com/info_and_permissions/dyi/",s:["Open Accounts Center, then Personal details","Tap Account ownership and control","Choose Deactivation or deletion, pick your profile","Select Delete account and confirm"],g:"30 days to cancel. Full removal from servers can take up to 90 days."},
+{n:"Threads",c:"social",u:"https://help.instagram.com/",d:"",s:["Open the Threads app, go to your profile","Tap the menu, then Account","Choose Delete or deactivate profile","Select Delete Threads profile"],g:"Deleting Threads alone keeps Instagram. Deleting Instagram removes Threads too."},
+{n:"X (Twitter)",c:"social",u:"https://x.com/settings/deactivate",d:"https://x.com/settings/download_your_data",s:["Open Settings, then Your account","Tap Deactivate your account","Read the notice and confirm with your password"],g:"Restorable for 30 days, then permanently deleted."},
+{n:"Snapchat",c:"social",u:"https://accounts.snapchat.com/accounts/delete_account",d:"https://accounts.snapchat.com/accounts/downloadmydata",s:["Open the link and log in","Re-enter your password","Confirm deletion"],g:"Account is deactivated for 30 days, then deleted."},
+{n:"TikTok",c:"video",u:"https://support.tiktok.com/en/account-and-privacy/deleting-an-account",d:"",s:["In the app: Profile, then menu, then Settings and privacy","Tap Account, then Deactivate or delete account","Choose Delete permanently and verify your identity"],g:"Deactivated for 30 days, then deleted. Download your data first under Settings."},
+{n:"YouTube",c:"video",u:"https://www.youtube.com/account_advanced",d:"https://takeout.google.com",s:["Open Advanced settings and log in","Select Delete channel","Confirm by typing your channel name"],g:"Deletes the channel only. Your Google account stays."},
+{n:"Google account",c:"other",u:"https://myaccount.google.com/deleteaccount",d:"https://takeout.google.com",s:["Open the link and sign in","Review what will be lost (Gmail, Drive, Photos)","Tick the confirmations and select Delete account"],g:"Affects every Google service. Recovery is possible only for a short time."},
+{n:"Microsoft account",c:"other",u:"https://account.live.com/closeaccount.aspx",d:"https://account.microsoft.com/privacy",s:["Open the link and sign in","Check each box to confirm","Select Mark account for closure"],g:"Closed after a 30 or 60 day wait you can choose."},
+{n:"LinkedIn",c:"other",u:"https://www.linkedin.com/psettings/close-account",d:"https://www.linkedin.com/mypreferences/d/download-my-data",s:["Open the link and sign in","Pick a reason for leaving","Enter your password and close the account"],g:"Short window to reactivate, then removed."},
+{n:"Reddit",c:"social",u:"https://www.reddit.com/settings/account",d:"https://www.reddit.com/settings/data-request",s:["Open Settings, then Account","Scroll to the bottom and select Delete account","Confirm with your password"],g:"The username can never be reused. Old posts may stay but show as [deleted]."},
+{n:"Pinterest",c:"social",u:"https://help.pinterest.com/en/article/deactivate-or-close-your-account",d:"",s:["Open Settings, then Account management","Under Delete your data and account, choose Delete account","Confirm via the email Pinterest sends"],g:"Permanent after about 14 days."},
+{n:"Telegram",c:"messaging",u:"https://my.telegram.org/deactivate",d:"",s:["Open the link and enter your phone number","Type the code Telegram sends to your app","Choose Delete My Account"],g:"Irreversible. Export data first from Telegram Desktop (Settings, Advanced)."},
+{n:"WhatsApp",c:"messaging",u:"https://faq.whatsapp.com/",d:"",s:["Open WhatsApp, then Settings, then Account","Tap Delete account","Enter your phone number and confirm"],g:"Cannot be undone. Request your data first in the same Account menu."},
+{n:"Discord",c:"messaging",u:"https://support.discord.com/hc/en-us/articles/212500837",d:"",s:["Transfer or delete any servers you own","Open User Settings, then My Account","Select Delete Account and enter your password"],g:"You cannot delete while you still own servers."}
+];
+var C={all:["All","सभी"],social:["Social","सोशल"],video:["Video","वीडियो"],messaging:["Messaging","मैसेजिंग"],other:["Other","अन्य"]};
+var L={en:{h1:"Delete your accounts the direct way.",sub:"Official links and steps for 14 platforms. No login, no password. Everything stays on your device.",q:"Search Instagram, TikTok, Google",pt:" of 14 done",del:"Open delete page",dl:"Download your data",ok:"Mark as deleted",undo:"Undo",none:"No platform found. Try another name.",h2:"Ask for erasure by law",h2s:"If a platform makes deletion hard, send this request to its privacy email.",un:"Your username or email on the platform",cp:"Copy request",cd:"Copied",warn:"Never share your password with any website, including this one. Platforms change their pages often, so if a link is broken, search the platform name with \"delete account\" in its Help Center."},
+hi:{h1:"अकाउंट डिलीट करो, सीधे रास्ते से।",sub:"14 प्लेटफ़ॉर्म के आधिकारिक लिंक और स्टेप्स। न लॉगिन, न पासवर्ड। सब कुछ आपके डिवाइस पर रहता है।",q:"Instagram, TikTok, Google खोजें",pt:" में से 14 हो गए",del:"डिलीट पेज खोलें",dl:"अपना डेटा डाउनलोड करें",ok:"डिलीट हो गया",undo:"वापस करें",none:"कोई प्लेटफ़ॉर्म नहीं मिला। दूसरा नाम आज़माएं।",h2:"कानून के तहत डेटा मिटाने की मांग",h2s:"अगर प्लेटफ़ॉर्म डिलीट करना मुश्किल बनाए, तो यह रिक्वेस्ट उसके प्राइवेसी ईमेल पर भेजें।",un:"प्लेटफ़ॉर्म पर आपका यूज़रनेम या ईमेल",cp:"रिक्वेस्ट कॉपी करें",cd:"कॉपी हो गया",warn:"किसी भी वेबसाइट को अपना पासवर्ड कभी न दें, इस वेबसाइट को भी नहीं। प्लेटफ़ॉर्म अपने पेज बदलते रहते हैं, इसलिए लिंक न खुले तो उसके Help Center में \"delete account\" खोजें।"}};
+var LAW=[["EU / UK","Article 17 of the GDPR (right to erasure)"],["California, USA","Section 1798.105 of the CCPA (right to delete)"],["India","Section 12 of the Digital Personal Data Protection Act, 2023"],["Other country","the data protection laws that apply to me"]];
+var $=function(i){return document.getElementById(i)};
+var lang="en",cat="all",done={};
+try{lang=localStorage.getItem("alv-l")||"en";done=JSON.parse(localStorage.getItem("alv-d")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("alv-l",lang);localStorage.setItem("alv-d",JSON.stringify(done))}catch(e){}}
+function t(k){return L[lang][k]}
+function li(i){return lang=="en"?0:1}
+function list(){
+ var q=$("q").value.toLowerCase(),h="";
+ P.forEach(function(p,i){
+  if(cat!="all"&&p.c!=cat)return;
+  if(q&&p.n.toLowerCase().indexOf(q)<0)return;
+  h+='<details class="'+(done[p.n]?"isdone":"")+'" data-i="'+i+'"><summary><span class="tick"></span><b>'+p.n+'</b><span class="cat">'+C[p.c][li()]+'</span></summary><div class="pn"><ol>'+p.s.map(function(s){return"<li>"+s+"</li>"}).join("")+'</ol><p class="note">'+p.g+'</p><div class="acts"><a class="btn del" target="_blank" rel="noopener noreferrer" href="'+p.u+'">'+t("del")+'</a>'+(p.d?'<a class="btn" target="_blank" rel="noopener noreferrer" href="'+p.d+'">'+t("dl")+'</a>':"")+'<button class="btn mk" data-n="'+p.n+'">'+(done[p.n]?t("undo"):t("ok"))+'</button></div></div></details>';
+ });
+ $("list").innerHTML=h||'<p class="empty">'+t("none")+'</p>';
+ var c=Object.keys(done).filter(function(k){return done[k]}).length;
+ $("pt").textContent=c+t("pt");$("pb").style.width=(c/P.length*100)+"%";
+}
+function chips(){
+ $("chips").innerHTML=Object.keys(C).map(function(k){return'<button data-c="'+k+'" class="'+(k==cat?"on":"")+'">'+C[k][li()]+'</button>'}).join("");
+}
+function tpl(){
+ var l=LAW[$("ct").value],p=$("pl").value,u=$("un").value||"[your username or email]";
+ $("out").value="Subject: Request to erase my personal data\n\nHello "+p+" Privacy Team,\n\nUnder "+l[1]+", I request that you permanently delete my account ("+u+") and all personal data you hold about me, including data shared with third parties.\n\nPlease confirm in writing once this is done. If you need to verify my identity, tell me what you need.\n\nThank you.";
+}
+function ui(){
+ $("h1").textContent=t("h1");$("sub").textContent=t("sub");$("q").placeholder=t("q");
+ $("h2").textContent=t("h2");$("h2s").textContent=t("h2s");$("un").placeholder=t("un");$("cp").textContent=t("cp");$("warn").textContent=t("warn");
+ $("en").className=lang=="en"?"on":"";$("hi").className=lang=="hi"?"on":"";
+ document.documentElement.lang=lang;chips();list();
+}
+$("ct").innerHTML=LAW.map(function(x,i){return'<option value="'+i+'">'+x[0]+'</option>'}).join("");
+$("pl").innerHTML=P.map(function(p){return"<option>"+p.n+"</option>"}).join("");
+$("q").oninput=list;$("un").oninput=tpl;$("ct").onchange=tpl;$("pl").onchange=tpl;
+$("chips").onclick=function(e){var c=e.target.getAttribute("data-c");if(c){cat=c;chips();list()}};
+$("list").onclick=function(e){var n=e.target.getAttribute("data-n");if(n){done[n]=!done[n];save();var o=document.querySelector('[data-n="'+n+'"]').closest("details").open;list();document.querySelector('[data-n="'+n+'"]').closest("details").open=o}};
+$("en").onclick=function(){lang="en";save();ui()};$("hi").onclick=function(){lang="hi";save();ui()};
+$("cp").onclick=function(){try{navigator.clipboard.writeText($("out").value)}catch(e){$("out").select();document.execCommand("copy")}var b=$("cp");b.textContent=t("cd");setTimeout(function(){b.textContent=t("cp")},1500)};
+ui();tpl();
+</script>
+</body>
+</html>
